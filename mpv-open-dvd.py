@@ -1,6 +1,13 @@
-#Built off of Get_IMDb_Movie.py
-#   Ethan Miller
-#   3/13/2019
+
+'''
+original designer:
+ Pointy Orb
+ 11/29/2023
+
+Built off of Get_IMDb_Movie.py
+   Ethan Miller
+   3/13/2019
+'''
 
 language_codes = {
   ".en": "English", ".jp": "Japanese"
