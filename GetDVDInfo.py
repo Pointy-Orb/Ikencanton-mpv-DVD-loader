@@ -6,9 +6,6 @@ Built off of Get_IMDb_Movie.py
 try:
  from win32api import GetVolumeInformation, GetLogicalDrives
  from win32file import GetDriveType
- import os 
- import subprocess
- import shutil
 
 except ModuleNotFoundError as e:
  print('Oops! Something went wrong.', e)
