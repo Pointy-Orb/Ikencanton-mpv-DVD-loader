@@ -6,11 +6,10 @@ key_location = "no_directory"
 question = "null"
 
 try:
- from win32api import GetVolumeInformation, GetLogicalDrives
- from win32file import GetDriveType
  import os 
  import subprocess
  import shutil
+ import importlib
 
 except ModuleNotFoundError as e:
  print('Oops! Something went wrong.', e)
@@ -22,11 +21,12 @@ except ModuleNotFoundError as e:
  print('Exiting application . . .')
  exit()
 
+settings = importlib.import_module('.Settings', 'Installer.InstallTools')
 try:
   import Keys
   import GetDVDInfo
 except ModuleNotFoundError as e:
-  print(e + " file not found. Check to make sure that it is in the same directory as this script.")
+  print(str(e) + " file not found. Check to make sure that it is in the same directory as this script.")
   print("Location of file: " + os.path.curdir)
   exit()
 
@@ -72,27 +72,6 @@ def getKeyValues():
     answer_current_ex_no = "null"
 
   writeToKeys(answer_title, answer_episode_names, answer_ex_names, answer_ep_no, answer_ex_no)
-
-'''
-  if answer_ex_names:
-    for i in answer_ex_names:
-      while not str.isnumeric(answer_current_ex_no):
-        answer_current_ex_no = input("Title ID of extra " + str(answer_ex_names.index(i) + 1) + " of " + str(len(answer_ex_names)) + ": ")
-        if not str.isnumeric(answer_current_ex_no):
-            print("The value you have entered is not a number. Try again:\n")
-      answer_ex_no.append(answer_current_ex_no)
-'''
-
-'''
-  for i in answer_episode_names:
-    while not str.isnumeric(answer_current_ep_no):
-      if not answer_episode_names:
-        answer_current_ep_no = input("Title ID of movie: ")
-      else:
-        answer_current_ep_no = input("Title ID of episode " + str(answer_episode_names.index(i) + 1) + " of " + str(len(answer_episode_names)) + ": ")
-        if not str.isnumeric(answer_current_ep_no):
-          print("The value you have entered is not a number. Try again:\n")
-'''
 
 def writeToKeys(an_title: str, an_ep_names: list, an_ex_names: list, an_ep_no: list, an_ex_no: list):
     list_names = [an_ep_names, an_ex_names, an_ep_no, an_ex_no]
@@ -147,15 +126,17 @@ values.printEpisodeNames()
 
 selected_title = "value"
 
-print("\nType 'exit' to close program\n")
-while not str.isnumeric(selected_title) and not selected_title == "exit" and not str.isnumeric(selected_title.replace('x', '')) and not str.isnumeric(selected_title.replace('raw-', '')):
+print("\nType 'exit' to close program and type 'settings' to open settings\n")
+while True:
     selected_title = input("Type the episode number of the title you want to play. For extras, put an 'x' in front of your number: ")
-    if not str.isnumeric(selected_title) and not selected_title == "exit" and not str.isnumeric(selected_title.replace('x', '')) and not str.isnumeric(selected_title.replace('raw-', '')):
-        print("Input is not valid. Try again:\n")
     if "x" in selected_title:
       extras_not_episodes = True
+    if not str.isnumeric(selected_title) and not selected_title == "exit" and not str.isnumeric(selected_title.replace('x', '')) and not str.isnumeric(selected_title.replace('raw-', '') and not selected_title == "settings"):
+        print("Input is not valid. Try again:\n")
+    else:
+       break
 
-subtitle_dir = Keys.GetSubtitleDirectory()
+subtitle_dir = settings.GetSubtitleDirectory()
 avalible_sub_list: list = []
 chose_sub_dir = "null"
 
@@ -182,7 +163,7 @@ else:
 if selected_title == "exit":
     exit()
 elif selected_title == "settings":
-   pass
+    settings.DefineSettings()
 elif "raw-" in selected_title:
     subprocess.run("mpv dvd://" + selected_title.replace('raw-', '') + "/" + drive + " --dvd-device=PATH")
 elif "x" in selected_title:
