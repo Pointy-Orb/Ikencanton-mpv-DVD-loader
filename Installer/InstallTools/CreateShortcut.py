@@ -36,7 +36,7 @@ class MakerShortcut:
 
         # Target of shortcut
         target = os.path.join(scriptsDir, packageName)
-        ico_target = os.path.join(scriptsDir, 'ikencanton.ico')
+        ico_target = os.path.join(scriptsDir, 'iken canton.ico')
 
         # Read location of Windows desktop folder from registry
         regName = 'Desktop'
