@@ -1,8 +1,14 @@
 import importlib
+import os
+import json
 shortcut_maker = importlib.import_module('.CreateShortcut', 'InstallTools').MakerShortcut
 settings = importlib.import_module('.Settings', 'InstallTools').SettingsCon
 
 choice: str
+
+with open(os.path.join(os.getcwd(), 'Saves', 'settings.json'), 'w') as file:
+    data = {'i_exist': "now you do"}
+    json.dump(data, file)
 
 #Creating desktop shortcut so that file can easily be opened.
 print("Creating desktop shortcut...")
@@ -21,3 +27,11 @@ if choice == "y":
     settings.SetSubtitleDirectory()
 else:
     print("OK then. This can be changed later.")
+
+#C:\Users\point\Desktop\DVDKey\Subtitles
+with open(os.path.join(os.getcwd(), 'Saves', 'settings.json'), 'r') as file:
+    data = json.load(file)
+with open(os.path.join(os.getcwd(), 'Saves', 'settings.json'), 'w') as file:
+    entry = {'fullscreen': False}
+    data['fullscreen'] = False
+    json.dump(data, file)

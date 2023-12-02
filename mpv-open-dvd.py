@@ -2,7 +2,6 @@ language_codes = {
   ".en": "English", ".ja": "Japanese", ".es": "Spanish", ".it": "Italian"
 }
 
-
 question = "null"
 
 try:
@@ -10,7 +9,6 @@ try:
  import subprocess
  import importlib
  import pickle
-
 except ModuleNotFoundError as e:
  print('Oops! Something went wrong.', e)
  count = 0
@@ -20,6 +18,8 @@ except ModuleNotFoundError as e:
  input('Press enter to exit . . .')
  print('Exiting application . . .')
  exit()
+
+os.system('color 57')
 
 root = os.path.dirname(os.path.abspath(__file__))
 
@@ -51,6 +51,10 @@ def getAnswer(question: str, valid_answers: list, need_number: bool):
          else:
           return choice
 
+def makeStringSafe(string: str):
+   string.replace(' ', '_')
+   return string
+
 def getKeyValues():
   answer_title = getAnswer("What is the title of the movie/TV show on the DVD? : ", None, False)
   answer_episode_names = []
@@ -71,12 +75,12 @@ def getKeyValues():
         break
   print("\nType the Title ID for each of the episodes. You can find an episodes's Title ID by manually testing 'mpv dvd://[title ID - 1]/[dvd volume] --dvd-device=PATH'")
   for i in answer_episode_names:
-    if not answer_episode_names:
-      answer_current_ep_no = getAnswer("Title ID of movie: ", None, True)
-    else:
-      answer_current_ep_no = getAnswer("Title ID of episode " + str(answer_episode_names.index(i) + 1) + " of " + str(len(answer_episode_names)) + ": ", None, True)
+    answer_current_ep_no = getAnswer("Title ID of episode " + str(answer_episode_names.index(i) + 1) + " of " + str(len(answer_episode_names)) + ": ", None, True)
     answer_ep_no.append(answer_current_ep_no)
     answer_current_ep_no = "null"
+  if not answer_episode_names:
+    answer_current_ep_no = getAnswer("Title ID of movie: ", None, True)
+    answer_ep_no.append(answer_current_ep_no)
   print("\nNow repeat the same thing for the extras:")
   while not answer_current_ex_name == "done":
       answer_current_ex_name = getAnswer("Title of extra video " + str(len(answer_ex_names) + 1) + ": ", None, False)
@@ -139,12 +143,16 @@ while True:
     selected_title = input("Type the episode number of the title you want to play. For extras, put an 'x' in front of your number: ")
     if "x" in selected_title:
       extras_not_episodes = True
-    if not str.isnumeric(selected_title) and not selected_title == "exit" and not str.isnumeric(selected_title.replace('x', '')) and not str.isnumeric(selected_title.replace('raw-', '') and not selected_title == "settings"):
+    if not str.isnumeric(selected_title) and not selected_title == "exit" and not str.isnumeric(selected_title.replace('x', '')) and not str.isnumeric(selected_title.replace('raw-', '')) and not selected_title == "settings":
         print("Input is not valid. Try again:\n")
     else:
        break
 
 if selected_title == "exit":
+    exit()
+
+if selected_title == "settings":
+    settings.Setting()
     exit()
 
 subtitle_dir = settings.GetSubtitleDirectory()
@@ -155,7 +163,7 @@ chose_sub_dir = "null"
 print("\nAvalible subtitle languages:")
 for i in language_codes.keys():
   cani_sub = selected_title + i + ".srt"
-  if os.path.exists(os.path.join(subtitle_dir, label_volume, cani_sub)):
+  if os.path.exists(os.path.join(subtitle_dir, makeStringSafe(label_volume), cani_sub)):
     print(language_codes[i])
     avalible_sub_list.append(i)
 
@@ -163,7 +171,7 @@ if not avalible_sub_list:
   print("\nNo external subtitles were detected\n")
 elif len(avalible_sub_list) == 1:
   chose_sub = selected_title + avalible_sub_list[0] + ".srt"
-  chose_sub_dir = os.path.join(subtitle_dir, label_volume, chose_sub)
+  chose_sub_dir = os.path.join(subtitle_dir, makeStringSafe(label_volume), chose_sub)
   print("\nImporting " + language_codes[avalible_sub_list[0]] + " subtitles\n")
 else:
   print("Multiple subtitles were detected, please select one to import.")
@@ -176,13 +184,18 @@ else:
     else:
        break
 
-if selected_title == "settings":
-    settings.DefineSettings()
-elif "raw-" in selected_title:
-    subprocess.run("mpv dvd://" + selected_title.replace('raw-', '') + "/" + drive + " --dvd-device=PATH")
-elif "x" in selected_title:
-    subprocess.run("mpv --sub-file={sub_file_dir} dvd://{t}/{D} --dvd-device=PATH --aid={aid}".format(sub_file_dir=str(chose_sub_dir), t=str(int(values.extras_title_no[int(selected_title.replace('x', '')) - 1]) - 1), D=drive, aid=values.default_title_id))
-    exit() 
+if settings.GetFullscreen():
+   fs = ' --fullscreen'
 else:
-    subprocess.run("mpv --sub-file={sub_file_dir} dvd://{t}/{D} --dvd-device=PATH --aid={aid}".format(sub_file_dir=str(chose_sub_dir), t=str(int(values.episode_title_no[int(selected_title) - 1]) - 1), D=drive, aid=values.default_title_id))
+   fs = ''
+
+if "x" in selected_title:
+  title_no = str(int(values.extras_title_no[int(selected_title.replace('x', '')) - 1]) - 1)
+else:
+  title_no = str(int(values.episode_title_no[int(selected_title) - 1]) - 1)
+
+if "raw-" in selected_title:
+    subprocess.run("mpv dvd://" + selected_title.replace('raw-', '') + "/" + drive + " --dvd-device=PATH")
+else:
+    subprocess.run("mpv --sub-file={sub_file_dir} dvd://{t}/{D} --dvd-device=PATH --aid={aid}{full}".format(sub_file_dir=str(chose_sub_dir), t=title_no, D=drive, aid=values.default_title_id, full=fs))
     exit()

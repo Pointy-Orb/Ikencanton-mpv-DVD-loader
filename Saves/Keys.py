@@ -21,13 +21,13 @@ class Key:
 
     def printEpisodeNames(self):
         print("\n" + self.title + "\n")
-        if not self.episode_names == "none":
+        if not self.episode_names == []:
             print("Episodes:")
             for i in self.episode_names:
                 print("\tEpisode (" + str(self.episode_names.index(i) + 1) + "): " + str(i))
-        else: print("This DVD does not have an episodic format")
-        if not self.extras_names == "none":
-            print("\nExtras")
+        else: print("Type '1' to play movie")
+        if not self.extras_names == []:
+            print("\nExtras:")
             for i in self.extras_names:
                 print("\t" + i + ": x" + str(self.extras_names.index(i) + 1))
         else: print("\nThis DVD does not have extras")

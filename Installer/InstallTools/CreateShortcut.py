@@ -19,8 +19,7 @@ class MakerShortcut:
             # Read variable from Windows Registry
             # From http://stackoverflow.com/a/35286642
             try:
-                registry_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, path, 0,
-                                            winreg.KEY_READ)
+                registry_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, path, 0, winreg.KEY_READ)
                 value, regtype = winreg.QueryValueEx(registry_key, name)
                 winreg.CloseKey(registry_key)
                 return value
