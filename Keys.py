@@ -1,5 +1,7 @@
+import json
+
 class Key: 
-    def __init__(self, title: str, ep_names: list, ex_names: list, ep_nos: list, ex_nos: list):  
+    def __init__(self, title: str, ep_names: list, ex_names: list, ep_nos: list, ex_nos: list, def_audio_id):  
         #Title ID is the specification of where a video is in a DVD playlist. It can be seen by going into VLC>Playback>Title>The highlighted title ID is the title ID of the current video
         #Write the title of the movie/show here:
         self.title = title
@@ -14,17 +16,20 @@ class Key:
         #Functions the same as episode_title_no, but now with the extras instead of the episodes.
         self.extras_title_no = ex_nos
 
+        #The default audio track to be played
+        self.default_title_id = def_audio_id
+
     def printEpisodeNames(self):
         print("\n" + self.title + "\n")
         if not self.episode_names == "none":
             print("Episodes:")
             for i in self.episode_names:
-                print("Episode (" + str(self.episode_names.index(i) + 1) + "): " + str(i))
+                print("\tEpisode (" + str(self.episode_names.index(i) + 1) + "): " + str(i))
         else: print("This DVD does not have an episodic format")
         if not self.extras_names == "none":
             print("\nExtras")
             for i in self.extras_names:
-                print(i + ": x" + str(self.extras_names.index(i) + 1))
+                print("\t" + i + ": x" + str(self.extras_names.index(i) + 1))
         else: print("\nThis DVD does not have extras")
 
     def printEpisodeNumbers(self):
@@ -34,14 +39,7 @@ class Key:
                 print("Episode (" + str(self.episode_title_no.index(i) + 1) + "): " + str(i))
         else: print("Type '1' to play movie")
         if not self.extras_names == "none":
-            print("\nExtras")
+            print("Extras")
             for i in self.extras_title_no:
                 print(i + ": x" + str(self.extras_title_no.index(i) + 1))
         else: print("\nThis DVD does not have extras")
-
-def GetSubtitleDirectory():
-    return "C:\\Users\\point\\Desktop\\DVD Key\\Subtitles\\"
-
-key_names = {
-	#DONTREMOVEME
-}
