@@ -1,5 +1,10 @@
 language_codes = {
-  ".en": "English", ".ja": "Japanese", ".es": "Spanish", ".it": "Italian"
+  ".en": "English", ".ja": "Japanese", ".es": "Spanish", ".it": "Italian", ".zh": "Chinese", 
+  ".hi": "Hindi", ".fr": "French", ".ar": "Arabic", ".bn": "Bengali", ".pt": "Portugese",
+  ".ru": "Russian", ".ur": "Urdu", ".id": "Indonesian", ".de": "German", ".mr": "Marathi",
+  ".te": "Telugu", ".tr": "Turkish", ".ta": "Tamil", ".vi": "Vietnamese", ".tl": "Tagalog",
+  ".ko": "Korean", ".fa": "Persian", ".ha": "Hausa", ".sw": "Swahili", ".jv": "Javanese",
+  ".pa": "Punjabi", ".gu": "Gujarati", ".th": "Thai", ".kn": "Kannada", ".am": "Amharic",
 }
 
 question = "null"
@@ -23,6 +28,7 @@ os.system('color 57')
 
 root = os.path.dirname(os.path.abspath(__file__))
 
+#Importing the local modules of the project
 try:
   settings = importlib.import_module('.Settings', 'Installer.InstallTools').SettingsCon
   import GetDVDInfo
@@ -32,6 +38,7 @@ except ModuleNotFoundError as e:
   print("Location of file: " + os.path.curdir)
   exit()
 
+#This function is meant to streamline the process of asking and getting a valid answer
 def getAnswer(question: str, valid_answers: list, need_number: bool):
    while True:
       choice = input(question)
@@ -55,8 +62,10 @@ def makeStringSafe(string: str):
    string.replace(' ', '_')
    return string
 
+#This is the function that gets all the values required to save an new DVD identification
 def getKeyValues():
   answer_title = getAnswer("What is the title of the movie/TV show on the DVD? : ", None, False)
+  
   answer_episode_names = []
   answer_current_ep_name =  "null"
   answer_ep_no = []
