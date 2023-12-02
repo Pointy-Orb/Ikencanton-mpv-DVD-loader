@@ -97,6 +97,7 @@ def writeToKeys(an_title: str, an_ep_names: list, an_ex_names: list, an_ep_no: l
       data = Keys.Key(an_title, an_ep_names, an_ex_names, an_ep_no, an_ex_no, an_aid)
       pickle.dump(data, file)
     print("File saved to local database")
+    input("\nPress Enter to exit")
     exit()
 
 # Get the volume label of your CD ROM.
@@ -180,7 +181,7 @@ if selected_title == "settings":
 elif "raw-" in selected_title:
     subprocess.run("mpv dvd://" + selected_title.replace('raw-', '') + "/" + drive + " --dvd-device=PATH")
 elif "x" in selected_title:
-    subprocess.run("mpv --sub-file=" + str(chose_sub_dir) + " dvd://" + str(int(values.extras_title_no[int(selected_title.replace('x', '')) - 1]) - 1) + "/" + drive + " --dvd-device=PATH --aid=")
+    subprocess.run("mpv --sub-file={sub_file_dir} dvd://{t}/{D} --dvd-device=PATH --aid={aid}".format(sub_file_dir=str(chose_sub_dir), t=str(int(values.extras_title_no[int(selected_title.replace('x', '')) - 1]) - 1), D=drive, aid=values.default_title_id))
     exit() 
 else:
     subprocess.run("mpv --sub-file={sub_file_dir} dvd://{t}/{D} --dvd-device=PATH --aid={aid}".format(sub_file_dir=str(chose_sub_dir), t=str(int(values.episode_title_no[int(selected_title) - 1]) - 1), D=drive, aid=values.default_title_id))
